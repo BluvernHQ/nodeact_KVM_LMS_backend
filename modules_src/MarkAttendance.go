@@ -48,7 +48,7 @@ func MarkAttendance(w http.ResponseWriter, r *http.Request, db *mongo.Client, au
 		http.Error(w, "Role not found", http.StatusNotFound)
 		return
 	}
-	if Role["Role"] != "Admin" && Role["Role"] != "Staff" && Role["Role"] != "DEVELOPER" {
+	if Role["Role"] != "admin" && Role["Role"] != "staff" && Role["Role"] != "DEVELOPER" {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}

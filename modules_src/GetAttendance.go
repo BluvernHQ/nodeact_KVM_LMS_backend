@@ -40,7 +40,7 @@ func GetAttendance(w http.ResponseWriter, r *http.Request, db *mongo.Client, aut
 
 	collection := db.Database("KVM").Collection("Users")
 	var Role bson.M
-	err = collection.FindOne(ctx, bson.M{"Id": token.UID}, options.FindOne().SetProjection(bson.M{"Role": 1, "_id": 0})).Decode(&Role)
+	err = collection.FindOne(ctx, bson.M{"UID": token.UID}, options.FindOne().SetProjection(bson.M{"Role": 1, "_id": 0})).Decode(&Role)
 	if err != nil {
 		http.Error(w, "Database error: "+err.Error(), http.StatusInternalServerError)
 		return

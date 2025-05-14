@@ -64,7 +64,7 @@ func CreateStudent(w http.ResponseWriter, r *http.Request, db *mongo.Client, aut
 		http.Error(w, "Role not found", http.StatusNotFound)
 		return
 	}
-	if Role["Role"] != "Admin"  && Role["Role"] != "DEVELOPER"{
+	if Role["Role"] != "admin"  && Role["Role"] != "DEVELOPER"{
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
