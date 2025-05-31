@@ -1,1 +1,0 @@
-go build -buildmode=plugin -o modules_bin/CreateStaff.so modules_src/CreateStaff.go

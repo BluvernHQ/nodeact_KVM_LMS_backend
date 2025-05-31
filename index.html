@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Firebase Login and Token</title>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <h2>Login</h2>
+  <input type="email" id="email" placeholder="Email"><br>
+  <input type="password" id="password" placeholder="Password"><br>
+  <button onclick="login()">Login</button>
+
+  <p id="tokenOutput" style="margin-top: 20px; word-break: break-word;"></p>
+
+  <script>
+    // TODO: Replace with your actual Firebase project configuration
+    const firebaseConfig = {
+  apiKey: "AIzaSyCgOzzevTa4eYct6PRqEtUcrRIWCdf4EIk",
+  authDomain: "kvm-lms.firebaseapp.com",
+  projectId: "kvm-lms",
+  storageBucket: "kvm-lms.firebasestorage.app",
+  messagingSenderId: "251102660612",
+  appId: "1:251102660612:web:5b355e2bc1667cd0324d51",
+  measurementId: "G-D4G1WF7BRH"
+};
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          return userCredential.user.getIdToken();
+        })
+        .then((token) => {
+          document.getElementById("tokenOutput").innerText = "Token:\n" + token;
+          console.log("Firebase ID Token:", token);
+        })
+        .catch((error) => {
+          console.error("Error during login:", error.message);
+          alert("Login failed: " + error.message);
+        });
+    }
+  </script>
+</body>
+</html>

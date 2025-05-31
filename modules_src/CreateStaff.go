@@ -17,6 +17,7 @@ import (
 
 type Staff struct {
 	UID                 string   `json:"UID" bson:"UID"`
+	Name                string   `json:"Name" bson:"Name"`
 	Role                string   `json:"Role" bson:"Role"`
 	TimeStamp           string   `json:"TimeStamp" bson:"TimeStamp"`
 	DOB                 string   `json:"DOB" bson:"DOB"`

@@ -1,3 +1,10 @@
+deploy:
+	@echo "building modules"
+	@make all
+	@go build -o myapp main.go
+	@echo "restating KVM_api in pm2"
+	@pm2 restart KVM_api
+
 all: CreateStaff CreateStudent MarkAttendance GetAttendance GetUser FetchUsers
 
 CreateStaff:
