@@ -38,9 +38,14 @@ func initMongo() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://rajanand:machine2003@localhost:27017/admin"))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://admin:machine2003@localhost:27017/admin"))
 	if err != nil {
 		log.Fatal("Mongo Connect error:", err)
+	}
+
+	// Ping the database to verify connection
+	if err := client.Ping(ctx, nil); err != nil {
+		log.Fatal("MongoDB ping error:", err)
 	}
 
 	mongoClient = client

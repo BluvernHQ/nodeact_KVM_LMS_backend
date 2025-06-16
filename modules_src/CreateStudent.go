@@ -20,7 +20,7 @@ type Student struct {
 	TimeStamp     string   `json:"TimeStamp" bson:"TimeStamp"`
 	DOB           string   `json:"DOB" bson:"DOB"`
 	Name          string   `json:"Name" bson:"Name"`
-	Class         string   `json:"Class" bson:"Class"`
+	ClassId         string   `json:"Class" bson:"Class"`
 	Board         string   `json:"Board" bson:"Board"`
 	School        string   `json:"School" bson:"School"`
 	Address       string   `json:"Address" bson:"Address"`
@@ -33,11 +33,12 @@ type Student struct {
 	GuardianName  string   `json:"GuardianName" bson:"GuardianName"`
 	GuardianPhone string   `json:"GuardianPhone" bson:"GuardianPhone"`
 	Status        string   `json:"Status" bson:"Status"`
-	Batch         string   `json:"Batch" bson:"Batch"`
+	BatchId         string   `json:"Batch" bson:"Batch"`
 	ProfilePic    string   `json:"ProfilePic" bson:"ProfilePic"`
 }
 
 func CreateStudent(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
+	fmt.Println("HTTP Method:", r.Method)
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
