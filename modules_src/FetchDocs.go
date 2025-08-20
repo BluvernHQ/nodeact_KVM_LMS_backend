@@ -25,6 +25,13 @@ type RequestPayload struct {
 	Collection string `json:"collection"`
 }
 
+type ResponsePayload struct {
+	TotalDocs    int64                      `json:"total_docs"`
+	CurrentPage  int64                      `json:"current_page"`
+	TotalEntries int                        `json:"total_entries"`
+	Data         []map[string]interface{}   `json:"data"`
+}
+
 func MapToBsonM(input map[string]interface{}) (bson.M, error) {
 	data, err := bson.Marshal(input)
 	if err != nil {
@@ -35,8 +42,33 @@ func MapToBsonM(input map[string]interface{}) (bson.M, error) {
 	return result, err
 }
 
-func FetchUsers(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
-	if r.Method != http.MethodGet {
+func convertDatesDeep(data interface{}) interface{} {
+    switch val := data.(type) {
+    case map[string]interface{}:
+        for k, v := range val {
+            if k == "$date" {
+                if s, ok := v.(string); ok {
+                    if t, err := time.Parse(time.RFC3339, s); err == nil {
+                        return t
+                    }
+                }
+            } else {
+                val[k] = convertDatesDeep(v)
+            }
+        }
+        return val
+    case []interface{}:
+        for i, v := range val {
+            val[i] = convertDatesDeep(v)
+        }
+        return val
+    default:
+        return val
+    }
+}
+
+func FetchDocs(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
+	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
@@ -94,7 +126,8 @@ func FetchUsers(w http.ResponseWriter, r *http.Request, db *mongo.Client, authCl
 	SetLimit(payload.Paging.Limit).
 	SetProjection(proj)
 	collection = db.Database("KVM").Collection(payload.Collection)
-	cursor, err := collection.Find(ctx, payload.Query, findOptions)
+	filter := convertDatesDeep(payload.Query)
+	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
 		http.Error(w, "Error querying database", http.StatusInternalServerError)
 		return
@@ -107,6 +140,19 @@ func FetchUsers(w http.ResponseWriter, r *http.Request, db *mongo.Client, authCl
 		return
 	}
 
+	count, err := collection.CountDocuments(ctx, payload.Query)
+	if err != nil {
+		http.Error(w, "Error counting documents", http.StatusInternalServerError)
+		return
+	}
+
+	response := ResponsePayload{
+		TotalDocs:    count,
+		CurrentPage:  payload.Paging.Page,
+		TotalEntries: len(results),
+		Data:         results,
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(results)
+	json.NewEncoder(w).Encode(response)
 }

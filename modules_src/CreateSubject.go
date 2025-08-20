@@ -17,12 +17,13 @@ import (
 
 type Subjects struct {
 	Name		string   `json:"Name" bson:"Name"`
-	BatchId		string   `json:"Batch" bson:"Batch"`
-	ClassId		string   `json:"Class" bson:"Class"`
-	SubjectId	string   `json:"SubjectId" bson:"SubjectId"`
+	BatchId		string   `json:"Batch" bson:"BatchId"`
+	ClassId		string   `json:"Class" bson:"ClassId"`
+	BoardId		string   `json:"Board" bson:"BoardId"`
+	Fee			string   `json:"Fee" bson:"Fee"`
 }
 
-func CreateBatch(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
+func CreateSubject(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return

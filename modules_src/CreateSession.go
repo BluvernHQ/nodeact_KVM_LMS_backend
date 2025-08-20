@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
 	// "io"
 	"context"
 	"time"
@@ -16,15 +17,20 @@ import (
 )
 
 type Session struct {
-	Name			   string   `json:"Name" bson:"Name"`
-	TimeFrom		   string   `json:"TimeFrom" bson:"TimeFrom"`
-	TimeTo			   string   `json:"TimeTo" bson:"TimeTo"`
-	SubjectId 		   string   `json:"SubjectId" bson:"SubjectId"`
-	ClassId			   string   `json:"ClassId" bson:"ClassId"`
-	BatchId			   string   `json:"BatchId" bson:"BatchId"`
-	Staff 			   string   `json:"Staff" bson:"Staff"`
-	day 			   string   `json:"day" bson:"day"`
-}           
+	Name      string `json:"Name" bson:"Name"`
+	TimeFrom  string `json:"TimeFrom" bson:"TimeFrom"`
+	TimeTo    string `json:"TimeTo" bson:"TimeTo"`
+	ClassId   string `json:"ClassId" bson:"ClassId"`
+	SubjectId string `json:"SubjectId" bson:"SubjectId"`
+	BatchId   string `json:"BatchId" bson:"BatchId"`
+	BoardId   string `json:"BoardId" bson:"BoardId"`
+	Staff     string `json:"Staff" bson:"Staff"`
+	Day       string `json:"day" bson:"day"`
+	IsTest    bool `json:"IsTest" bson:"IsTest"`
+	TestHeading string `json:"TestHeading" bson:"TestHeading"`
+	TestChapterName string `json:"TestChapterName" bson:"TestChapterName"`
+	TestDescription string `json:"TestDescription" bson:"TestDescription"`
+}
 
 func CreateSession(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
 	if r.Method != http.MethodPost {

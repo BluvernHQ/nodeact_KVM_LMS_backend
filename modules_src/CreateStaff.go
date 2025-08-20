@@ -27,7 +27,7 @@ type Staff struct {
 	Phone               string   `json:"Phone" bson:"Phone"`
 	WorkingAt           string   `json:"WorkingAt" bson:"WorkingAt"`
 	OtherSpecialization string   `json:"OtherSpecialization" bson:"OtherSpecialization"`
-	BatchId             []string `json:"Batch" bson:"Batch"`
+	ClassId             []string `json:"ClassId" bson:"ClassId"`
 	ProfilePic          string   `json:"ProfilePic" bson:"ProfilePic"`
 }
 

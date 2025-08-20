@@ -4,26 +4,26 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
 	// "io"
 	"context"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"log"
 
 	"firebase.google.com/go/v4/auth"
 )
 
-type RequestPayload struct {
-	Id string   `json:"Id" bson:"Id"`
-	Collection string `json:"Collection" bson:"Collection"`
-	set string `json:"set" bson:"set"`
+type RequestUpdate struct {
+	Id         string                 `json:"Id" bson:"Id"`
+	Collection string                 `json:"Collection" bson:"Collection"`
+	Set        map[string]interface{} `json:"Set" bson:"Set"`
 }
 
-func DeleteBatch(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
+func UpdateDoc(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -56,25 +56,22 @@ func DeleteBatch(w http.ResponseWriter, r *http.Request, db *mongo.Client, authC
 		return
 	}
 
-	var payload RequestPayload
+	var payload RequestUpdate
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		http.Error(w, "Invalid JSON body", http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-collection = db.Database("KVM").Collection(payload.Collection)
-objectID, err := primitive.ObjectIDFromHex(payload.Id)
-    if err != nil {
-        log.Fatal("Invalid ObjectID:", err)
-    }
+	collection = db.Database("KVM").Collection(payload.Collection)
+	objectID, err := primitive.ObjectIDFromHex(payload.Id)
+	if err != nil {
+		http.Error(w, "Invalid ObjectID: "+err.Error(), http.StatusBadRequest)
+		return
+	}
 
-var update bson.M
-if err := json.Unmarshal([]byte(payload.set), &update); err != nil {
-	http.Error(w, "Invalid set payload: "+err.Error(), http.StatusBadRequest)
-	return
-}
+	update := payload.Set
 
-result, err := collection.UpdateOne(ctx, bson.M{"_id": objectID}, bson.M{"$set": update})
+	result, err := collection.UpdateOne(ctx, bson.M{"_id": objectID}, bson.M{"$set": update})
 	if err != nil {
 		http.Error(w, "Database error: "+err.Error(), http.StatusInternalServerError)
 		return

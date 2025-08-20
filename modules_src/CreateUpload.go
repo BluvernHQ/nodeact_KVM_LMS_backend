@@ -16,13 +16,15 @@ import (
 )
 
 type uploadDet struct {
-	URL					string   `json:"UID" bson:"UID"`
+	URL					string   `json:"URL" bson:"URL"`
 	TimeStamp           string   `json:"TimeStamp" bson:"TimeStamp"`
 	BatchId             string   `json:"Batch" bson:"Batch"`
 	ClassId			    string   `json:"Class" bson:"Class"`
+	SubjectId           string   `json:"Subject" bson:"Subject"`
+	FileName            string   `json:"FileName" bson:"FileName"`
 }
 
-func CreateStaff(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
+func CreateUpload(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return

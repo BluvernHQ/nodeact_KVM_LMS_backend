@@ -4,25 +4,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
 	// "io"
 	"context"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"log"
 
 	"firebase.google.com/go/v4/auth"
 )
 
-type RequestPayload struct {
-	Id string   `json:"Id" bson:"Id"`
+type RequestDelete struct {
+	Id         string `json:"Id" bson:"Id"`
 	Collection string `json:"Collection" bson:"Collection"`
 }
 
-func DeleteBatch(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
+func DeleteDoc(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -55,19 +55,20 @@ func DeleteBatch(w http.ResponseWriter, r *http.Request, db *mongo.Client, authC
 		return
 	}
 
-	var payload RequestPayload
+	var payload RequestDelete
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid JSON body", http.StatusBadRequest)
 		return
 	}
 
-collection = db.Database("KVM").Collection(payload.Collection)
+	collection = db.Database("KVM").Collection(payload.Collection)
 
-objectID, err := primitive.ObjectIDFromHex(payload.Id)
-    if err != nil {
-        log.Fatal("Invalid ObjectID:", err)
-    }
-result, err := collection.DeleteOne(ctx, bson.M{"_id": objectID})
+	objectID, err := primitive.ObjectIDFromHex(payload.Id)
+	if err != nil {
+		http.Error(w, "Invalid ObjectID: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+	result, err := collection.DeleteOne(ctx, bson.M{"_id": objectID})
 	if err != nil {
 		http.Error(w, "Database error: "+err.Error(), http.StatusInternalServerError)
 		return

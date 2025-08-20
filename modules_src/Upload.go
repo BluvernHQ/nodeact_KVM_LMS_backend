@@ -67,7 +67,7 @@ if r.Method != http.MethodPost {
 
 
     randomName := fmt.Sprintf("%d_%s", time.Now().UnixNano(), handler.Filename)
-    f, err := os.Create("/var/www/objectfiles" + randomName)
+    f, err := os.Create("/var/www/objectfiles/" + randomName)
     if err != nil {
         http.Error(w, "Failed to save file", http.StatusInternalServerError)
         return
@@ -92,6 +92,6 @@ if r.Method != http.MethodPost {
     w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"message":    "Upload successful",
-		"document URL": "http://api.kvmtcc.org/documents/objectfiles/" + randomName,
+		"document URL": "http://api.kvmtcc.org/documents/" + randomName,
 	})
 }

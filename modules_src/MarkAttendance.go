@@ -1,4 +1,4 @@
-package main
+	package main
 
 import (
 	"encoding/json"
@@ -16,7 +16,7 @@ import (
 )
 
 type Attendance struct {
-	SessionId      string `json:"Session"`
+	SessionId   string `json:"SessionId"`
 	UIDs 		[]string `json:"UIDs"`
 	MarkedAt    string `json:"MarkedAt"`
 }
@@ -68,15 +68,15 @@ func MarkAttendance(w http.ResponseWriter, r *http.Request, db *mongo.Client, au
 		"Session": data.SessionId,
 		"UID": token.UID,
 		"Role": "staff",
-		"MarkedAt": data.MarkedAt,
+		"MarkedAt": time.Now(),
 	})
 
 	for _, uid := range data.UIDs {
 		docs = append(docs, bson.M{
 			"Session":      data.SessionId,
 			"UID":          uid,
-			"Role": "student",
-			"MarkedAt":     data.MarkedAt,
+			"Role":         "student",
+			"MarkedAt":     time.Now(),
 		})
 	}
 

@@ -2,21 +2,33 @@ deploy:
 	@echo "building modules"
 	@make all
 	@go build -o myapp main.go
-	@echo "restating KVM_api in pm2"
-	@pm2 restart KVM_api
+	@echo "restating KVM-API in pm2"
+	@pm2 restart KVM-API
 
-all: CreateUpload CreateSession DeleteDoc Upload CreateClass CreateBatch CreateSubject CreateStaff CreateStudent MarkAttendance GetUser FetchDocs UpdateDoc
+all: ExportDocs MarkForTest CreateSection CreateMessage CreateUpload CreateSession DeleteDoc Upload CreateClass CreateBatch CreateBoard CreateSubject CreateStaff CreateStudent MarkAttendance GetUser FetchDocs UpdateDoc
 
-run:
+run_backend:
 	@pm2 start ./myapp --name KVM_api
+
+run_frontend:
+	cd /root/kvm_web
+	@pm2 start npm --name KVM_admin -- run start
+
+ExportDocs:
+	@echo "building ExportDocs"
+	@go build -buildmode=plugin -o modules_bin/ExportDocs.so modules_src/ExportDocs.go
+
+MarkForTest:
+	@echo "building MarkForTest"
+	@go build -buildmode=plugin -o modules_bin/MarkForTest.so modules_src/MarkForTest.go
 
 CreateUpload:
 	@echo "building CreateUpload"
 	@go build -buildmode=plugin -o modules_bin/CreateUpload.so modules_src/CreateUpload.go
 
-CreateSession:
-	@echo "building CreateSession"
-	@go build -buildmode=plugin -o modules_bin/CreateSession.so modules_src/CreateSession.go
+CreateBoard:
+	@echo "building CreateBoard"
+	@go build -buildmode=plugin -o modules_bin/CreateBoard.so modules_src/CreateBoard.go
 
 DeleteDoc:
 	@echo "building DeleteDoc"
@@ -65,3 +77,11 @@ FetchDocs:
 UpdateDoc:
 	@echo "building UpdateDoc"
 	@go build -buildmode=plugin -o modules_bin/UpdateDoc.so modules_src/UpdateDoc.go
+
+CreateMessage:
+	@echo "building CreateMessage"
+	@go build -buildmode=plugin -o modules_bin/CreateMessage.so modules_src/CreateMessage.go
+
+CreateSection:
+	@echo "building CreateSection"
+	@go build -buildmode=plugin -o modules_bin/CreateSection.so modules_src/CreateSection.go

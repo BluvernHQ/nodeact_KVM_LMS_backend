@@ -4,20 +4,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
 	// "io"
 	"context"
 	"time"
 
+	"firebase.google.com/go/v4/auth"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"firebase.google.com/go/v4/auth"
 )
 
 type Class struct {
-	Name			   string   `json:"Name" bson:"Name"`
-	BatchId			   string   `json:"BatchId" bson:"BatchId"`
+	Name    string `json:"Name" bson:"Name"`
+	BatchId string `json:"BatchId" bson:"BatchId"`
+	BoardId string `json:"BoardId" bson:"BoardId"`
 }
 
 func CreateClass(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
@@ -81,10 +83,9 @@ func CreateClass(w http.ResponseWriter, r *http.Request, db *mongo.Client, authC
 		return
 	}
 
-
 	collection = db.Database("KVM").Collection("Classes")
-	err = collection.FindOne(ctx, bson.M{"Name": data.Name}).Decode(&Role)
-	if err == mongo.ErrNoDocuments{
+	err = collection.FindOne(ctx, bson.M{"Name": data.Name, "BathId": objID}).Decode(&Role)
+	if err == mongo.ErrNoDocuments {
 		result, err := collection.InsertOne(ctx, data)
 		if err != nil {
 			http.Error(w, "Insert error", http.StatusInternalServerError)
@@ -92,10 +93,10 @@ func CreateClass(w http.ResponseWriter, r *http.Request, db *mongo.Client, authC
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
-		"message":    "Class created successfully",
-		"ID": result.InsertedID,
-	})
-	}else{
+			"message": "Class created successfully",
+			"ID":      result.InsertedID,
+		})
+	} else {
 		http.Error(w, "Error creating Class", http.StatusConflict)
 		return
 	}
