@@ -1,1 +1,49 @@
 firebase-admin>=6.0.0 
+
+
+
+
+
+
+
+
+
+
+🗑️  Deleting 294 users...
+[1/294] Deleting user: 0hpsFuhWkQN3U3MrU196yUmDG7B2
+✓ Successfully deleted user: 0hpsFuhWkQN3U3MrU196yUmDG7B2
+[2/294] Deleting user: 0iR0kOCGphY7B13w56nLrNQ93bv2
+✓ Successfully deleted user: 0iR0kOCGphY7B13w56nLrNQ93bv2
+[3/294] Deleting user: 0zfIzawbq6SjcXPkjOIoeGUE3SB3
+✓ Successfully deleted user: 0zfIzawbq6SjcXPkjOIoeGUE3SB3
+[4/294] Deleting user: 19AtoKZOr4RDSoyLdSCsCmzbDwz2
+✓ Successfully deleted user: 19AtoKZOr4RDSoyLdSCsCmzbDwz2
+[5/294] Deleting user: 1WbSAky7tuan00cdppUrkHRAVTg1
+✓ Successfully deleted user: 1WbSAky7tuan00cdppUrkHRAVTg1
+[6/294] Deleting user: 1jYEWAofREaxeCHZsCbzuRkdJo53
+✓ Successfully deleted user: 1jYEWAofREaxeCHZsCbzuRkdJo53
+[7/294] Deleting user: 1mmIaMyKzQVDeWj0anxZJSIou773
+✓ Successfully deleted user: 1mmIaMyKzQVDeWj0anxZJSIou773
+[8/294] Deleting user: 1wJq8HureUQyYyCMc4JlQ1O0KYU2
+✓ Successfully deleted user: 1wJq8HureUQyYyCMc4JlQ1O0KYU2
+[9/294] Deleting user: 1zn5smCdlZW10mLF1Kj1wu2HZvv2
+✓ Successfully deleted user: 1zn5smCdlZW10mLF1Kj1wu2HZvv2
+[10/294] Deleting user: 22VT8mzI3YY8riaQTWepWF3qiNn2
+✓ Successfully deleted user: 22VT8mzI3YY8riaQTWepWF3qiNn2
+[11/294] Deleting user: 2iyefbbS3OPgtrRCI3GkQYxAoEB3
+✓ Successfully deleted user: 2iyefbbS3OPgtrRCI3GkQYxAoEB3
+[12/294] Deleting user: 2tu4vyM1T2R2HJ5cJVcit1Fv2po1
+✓ Successfully deleted user: 2tu4vyM1T2R2HJ5cJVcit1Fv2po1
+[13/294] Deleting user: 2vlURQng4Ke5TTzLdEsGTjP9bxq1
+✓ Successfully deleted user: 2vlURQng4Ke5TTzLdEsGTjP9bxq1
+[14/294] Deleting user: 3BVjXRd5rSeax8f6IVqtDR4O3Au1
+✓ Successfully deleted user: 3BVjXRd5rSeax8f6IVqtDR4O3Au1
+[15/294] Deleting user: 3tN2Fo8lVLeI247XoFh0t7ynS0I2
+✓ Successfully deleted user: 3tN2Fo8lVLeI247XoFh0t7ynS0I2
+[16/294] Deleting user: 40IbzGMLX6YkxR1MDKNrrs958t93
+✓ Successfully deleted user: 40IbzGMLX6YkxR1MDKNrrs958t93
+[17/294] Deleting user: 42sUF9GVKUeMgT7yaLvyRgy8N7N2
+✓ Successfully deleted user: 42sUF9GVKUeMgT7yaLvyRgy8N7N2
+[18/294] Deleting user: 4AzIJmDk03YQYE4v4UzUq8aEx3v2
+✓ Successfully deleted user: 4AzIJmDk03YQYE4v4UzUq8aEx3v2
+^CTraceback (most recent call last):

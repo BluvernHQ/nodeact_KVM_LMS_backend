@@ -87,6 +87,13 @@ Body:{
     Collection: ""
 }
 
+# delete firebase user
+## /DeleteFirebaseUser
+Method: POST
+Body:{
+    Email: ""
+}
+
 # fetch document
 ## /FetchDoc
 Method: GET

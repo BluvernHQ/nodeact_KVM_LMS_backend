@@ -1,9 +1,10 @@
-	package main
+package main
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
 	// "io"
 	"context"
 	"time"
@@ -16,9 +17,9 @@ import (
 )
 
 type Attendance struct {
-	SessionId   string `json:"SessionId"`
-	UIDs 		[]string `json:"UIDs"`
-	MarkedAt    string `json:"MarkedAt"`
+	SessionId string   `json:"SessionId"`
+	UIDs      []string `json:"UIDs"`
+	MarkedAt  string   `json:"MarkedAt"`
 }
 
 func MarkAttendance(w http.ResponseWriter, r *http.Request, db *mongo.Client, authClient *auth.Client) {
@@ -60,23 +61,58 @@ func MarkAttendance(w http.ResponseWriter, r *http.Request, db *mongo.Client, au
 		return
 	}
 
+	// Parse MarkedAt string to time.Time
+	var markedAtTime time.Time
+	if data.MarkedAt != "" {
+		markedAtTime, err = time.Parse(time.RFC3339, data.MarkedAt)
+		if err != nil {
+			// Try other common formats if RFC3339 fails
+			markedAtTime, err = time.Parse("2006-01-02T15:04:05.000Z", data.MarkedAt)
+			if err != nil {
+				http.Error(w, "Invalid date format for MarkedAt. Use RFC3339 format (e.g., 2024-01-15T10:30:00.000Z)", http.StatusBadRequest)
+				return
+			}
+		}
+	} else {
+		// If no MarkedAt provided, use current time
+		markedAtTime = time.Now()
+	}
+
+	// Check for duplicate attendance for the same session on the same day
+	// Normalize the date to compare only the date part (ignore time)
+	dateOnly := time.Date(markedAtTime.Year(), markedAtTime.Month(), markedAtTime.Day(), 0, 0, 0, 0, markedAtTime.Location())
+	nextDay := dateOnly.AddDate(0, 0, 1)
 
 	collection = db.Database("KVM").Collection("Attendance")
+
+	// Delete existing attendance records for this session on this date
+	_, err = collection.DeleteMany(ctx, bson.M{
+		"Session": data.SessionId,
+		"MarkedAt": bson.M{
+			"$gte": dateOnly,
+			"$lt":  nextDay,
+		},
+	})
+	if err != nil {
+		http.Error(w, "Database error while removing existing attendance: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	var docs []interface{}
 
 	docs = append(docs, bson.M{
-		"Session": data.SessionId,
-		"UID": token.UID,
-		"Role": "staff",
-		"MarkedAt": time.Now(),
+		"Session":  data.SessionId,
+		"UID":      token.UID,
+		"Role":     "staff",
+		"MarkedAt": markedAtTime,
 	})
 
 	for _, uid := range data.UIDs {
 		docs = append(docs, bson.M{
-			"Session":      data.SessionId,
-			"UID":          uid,
-			"Role":         "student",
-			"MarkedAt":     time.Now(),
+			"Session":  data.SessionId,
+			"UID":      uid,
+			"Role":     "student",
+			"MarkedAt": markedAtTime,
 		})
 	}
 
@@ -88,6 +124,6 @@ func MarkAttendance(w http.ResponseWriter, r *http.Request, db *mongo.Client, au
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"message":    "Attendances inserted successfully",
+		"message": "Attendance marked successfully for session on " + dateOnly.Format("2006-01-02"),
 	})
 }

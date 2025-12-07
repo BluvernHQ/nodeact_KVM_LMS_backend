@@ -187,7 +187,13 @@ func CreateStudent(w http.ResponseWriter, r *http.Request, db *mongo.Client, aut
 		Password(data.RegNo)
 	userRecord, err := authClient.CreateUser(context.Background(), params)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error creating UID: %v", err), http.StatusInternalServerError)
+		errPayload := map[string]interface{}{
+			"message": fmt.Sprintf("Error creating UID: %v", err),
+			"email":   data.Email,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(errPayload)
 		return
 	}
 	data.UID = userRecord.UID

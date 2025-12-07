@@ -3,7 +3,7 @@ deploy:
 	@make all
 	@go build -o myapp main.go
 	@echo "restating KVM-API in pm2"
-	@pm2 restart KVM-API
+	@pm2 restart KVM-BCK
 
 all: ExportDocs MarkForTest CreateSection CreateMessage CreateUpload CreateSession DeleteDoc Upload CreateClass CreateBatch CreateBoard CreateSubject CreateStaff CreateStudent MarkAttendance GetUser FetchDocs UpdateDoc
 
@@ -85,3 +85,7 @@ CreateMessage:
 CreateSection:
 	@echo "building CreateSection"
 	@go build -buildmode=plugin -o modules_bin/CreateSection.so modules_src/CreateSection.go
+
+CreateFees:
+	@echo "building CreateFees"
+	@go build -buildmode=plugin -o modules_bin/CreateFees.so modules_src/CreateFees.go
